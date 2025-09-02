@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Encryption</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: crimson;
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+      z-index: 1000;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      position: relative;
+      margin: 0 15px;
+      width: 120px;
+      text-align: center;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
+      transition: transform 0.3s ease;
+    }
+
+    nav ul li::after {
+      content: attr(data-label);
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%) rotateX(90deg);
+      transform-origin: top center;
+      background: white;
+      color: crimson;
+      padding: 5px 10px;
+      border-radius: 5px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    nav ul li:hover::after {
+      transform: translateX(-50%) rotateX(0deg);
+      opacity: 1;
+    }
+
+    nav ul li:hover {
+      transform: translateY(-5px);
+    }
+
+    #content {
+      transform: scale(0.95) translateY(20px);
+      opacity: 0;
+      transition: transform 0.6s ease, opacity 0.6s ease;
+    }
+    #content.morph-in {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    #content.morph-out {
+      transform: scale(1.2) translateY(-20px);
+      opacity: 0;
+    }
+
+    body {
+      margin-top: 70px;
+      background: url(./resources/acer-aspire-stock-3840x2160-16924.jpg);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .card {
+      background-color: var(--surface-1);
+      border: 1px solid rgba(32, 4, 70, 0.21);
+      border-radius: 1.5rem;
+      background: rgba(32, 4, 70, 0.42);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    label.form-label {
+      color: #ffffff !important;
+      font-weight: bold;
+    }
+
+    h2 { 
+      color: #ffffff; text-shadow: 0 2px 6px rgba(0,0,0,0.5); 
+    }
+
+    button { 
+      border-radius: 1rem; border: none; transition: 0.25s; 
+    }
+
+    button:hover { 
+      transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.5); 
+    }
+
+    .form-control {
+       border-radius: 1rem !important; 
+    }
+
+    textarea, input, .form-control {
+      border-radius: 1rem !important;
+      transition: transform 0.2s, box-shadow 0.2s;
+      background-color: rgba(255, 255, 255, 0.1); 
+      color: #ffffff; /* white text */
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 10px;
+    }
+
+    textarea:focus, input:focus {
+      transform: scale(1.02);
+      box-shadow: 0 0 12px rgba(0, 180, 255, 0.7); 
+      outline: none;
+    }
+
+    .custom-file-upload {
+      position: relative;
+      border: 2px dashed rgba(255,255,255,0.5);
+      border-radius: 1rem;
+      padding: 30px;
+      text-align: center;
+      color: #ffffff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(255,255,255,0.05);
+      font-weight: bold;
+    }
+
+    .custom-file-upload:hover {
+      background: rgba(255,255,255,0.1);
+      box-shadow: 0 0 15px rgba(0,180,255,0.5);
+      border-color: #00bfff;
+    }
+
+    .custom-file-upload input[type="file"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .custom-file-upload span {
+      pointer-events: none;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-dark bg-dark fixed-top">
+  <div class="container-fluid d-flex justify-content-center">
+    <ul class="navbar-nav flex-row">
+      <li class="nav-item mx-3"><a class="nav-link" href="home.html">Home</a></li>
+      <li class="nav-item mx-3"><a class="nav-link" href="encrypt.html">Encrypt</a></li>
+      <li class="nav-item mx-3"><a class="nav-link" href="decrypt.html">Decrypt</a></li>
+      <li class="nav-item mx-3"><a class="nav-link" href="photo-encrypt.html">Photo Encrypt</a></li>
+      <li class="nav-item mx-3"><a class="nav-link" href="photo-decrypt.html">Photo Decrypt</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+  <div class="container p-3" id="content">
+    <div class="card p-4 col-lg-6 col-md-8 col-sm-10 mx-auto">
+      <h2 class="text-center mb-4">Photo Encryption</h2>
+
+      
+      <div class="mb-3">
+        <label class="form-label">Upload Image:</label>
+        <div class="custom-file-upload">
+          <input type="file" id="imageInput" accept="image/*">
+          <span>Click or drag your image here</span>
+        </div>
+      </div>
+
+      
+      <div class="d-flex justify-content-between gap-2 mb-3">
+        <button onclick="encryptPhoto()" class="btn btn-primary fw-bold flex-fill">Encrypt 📸</button>
+        <button onclick="downloadPhoto()" class="btn btn-success fw-bold flex-fill">Download 💾</button>
+      </div>
+
+     
+      <div class="mb-3 mt-4">
+        <label class="form-label">Encrypted Image (Base64):</label>
+        <textarea id="outputText" class="form-control" rows="8" readonly></textarea>
+      </div>
+
+      <div class="d-flex justify-content-center mt-3">
+        <button onclick="goToPhotoDecrypt()" class="btn btn-warning fw-bold w-50">Photo Decrypt 🔓</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let base64Data = "";
+
+  
+    function encryptPhoto() {
+      const file = document.getElementById("imageInput").files[0];
+      if (!file) { alert("Please select an image!"); return; }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        base64Data = e.target.result; // Base64 string of image
+        document.getElementById("outputText").value = base64Data;
+        localStorage.setItem("encryptedImage", base64Data); // Save in localStorage
+      };
+      reader.readAsDataURL(file);
+    }
+
+  
+    function downloadPhoto() {
+      if (!base64Data) { alert("Please encrypt an image first!"); return; }
+      const link = document.createElement("a");
+      link.href = "data:text/plain;charset=utf-8," + encodeURIComponent(base64Data);
+      link.download = "encrypted_image.txt";
+      link.click();
+    }
+
+    function goDecrypt() {
+      if (!base64Data) { alert("Please encrypt an image first!"); return; }
+      window.location.href = "photo-decrypt.html";
+    }
+
+    function goToPhotoDecrypt() {
+      const content = document.getElementById("content");
+      content.classList.remove("morph-in");
+      content.classList.add("morph-out");
+      setTimeout(() => {
+        window.location.href = "photo-decrypt.html";
+      }, 600);
+    }
+  </script>
+
+  <script>
+  document.querySelectorAll('.nav-link').forEach(link => {
+    if (link.href === window.location.href) {
+        link.classList.add('active');
+      }
+    });
+  </script>
+
+  <script>
+      document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("content").classList.add("morph-in");
+    });
+
+    document.querySelectorAll("a.page-link").forEach(link => {
+      link.addEventListener("click", e => {
+        e.preventDefault();
+        const target = e.currentTarget.href;
+        const content = document.getElementById("content");
+        content.classList.remove("morph-in");
+        content.classList.add("morph-out");
+        setTimeout(() => { window.location.href = target; }, 600);
+      });
+    });
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const content = document.getElementById("content");
+      content.classList.add("morph-in");
+      document.querySelectorAll('a.nav-link').forEach(link => {
+        link.addEventListener("click", e => {
+          e.preventDefault(); 
+          const target = e.currentTarget.href;
+          content.classList.remove("morph-in");
+          content.classList.add("morph-out");
+          setTimeout(() => {
+            window.location.href = target; 
+          }, 600); 
+        });
+      });
+    });
+ </script>
+  
+</body>
+</html>
