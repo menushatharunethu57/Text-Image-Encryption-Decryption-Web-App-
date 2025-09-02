@@ -31,6 +31,7 @@
     nav ul { 
       display: flex; 
       list-style: none; margin: 0; 
+      margin: 0;
       padding: 0; 
     }
 
@@ -45,6 +46,28 @@
       transition: transform 0.3s ease; 
     }
 
+    nav ul li::after {
+      content: attr(data-label);
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%) rotateX(90deg);
+      transform-origin: top center;
+      background: white;
+      color: crimson;
+      padding: 5px 10px;
+      border-radius: 5px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    nav ul li:hover::after {
+      transform: translateX(-50%) rotateX(0deg);
+      opacity: 1;
+    }
+    
     nav ul li:hover { 
       transform: translateY(-5px); 
     }
